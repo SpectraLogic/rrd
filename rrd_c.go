@@ -3,6 +3,7 @@ package rrd
 /*
 #include <stdlib.h>
 #include <rrd.h>
+#include <rrd_client.h>
 #include "rrdfunc.h"
 #cgo pkg-config: librrd
 */
@@ -442,7 +443,7 @@ func Info(filename string) (map[string]interface{}, error) {
 }
 
 // Fetch retrieves data from RRD file.
-func Fetch(filename, cf string, start, end time.Time, step time.Duration) (FetchResult, error) {
+func Fetch(filename, cf string, start, end time.Time, step time.Duration, daemon *string) (FetchResult, error) {
 	fn := C.CString(filename)
 	defer freeCString(fn)
 	cCf := C.CString(cf)
@@ -450,13 +451,18 @@ func Fetch(filename, cf string, start, end time.Time, step time.Duration) (Fetch
 	cStart := C.time_t(start.Unix())
 	cEnd := C.time_t(end.Unix())
 	cStep := C.ulong(step.Seconds())
+	var cDaemon *C.char
+	if daemon != nil {
+		cDaemon = C.CString(*daemon)
+	}
+
 	var (
 		ret      C.int
 		cDsCnt   C.ulong
 		cDsNames **C.char
 		cData    *C.double
 	)
-	err := makeError(C.rrdFetch(&ret, fn, cCf, &cStart, &cEnd, &cStep, &cDsCnt, &cDsNames, &cData))
+	err := makeError(C.rrdDaemonFetch(&ret, cDaemon, fn, cCf, &cStart, &cEnd, &cStep, &cDsCnt, &cDsNames, &cData))
 	if err != nil {
 		return FetchResult{filename, cf, start, end, step, nil, 0, nil}, err
 	}

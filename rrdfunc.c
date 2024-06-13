@@ -1,5 +1,6 @@
 #include <stdlib.h>
 #include <rrd.h>
+#include <rrd_client.h>
 
 char *rrdError() {
 	char *err = NULL;
@@ -38,6 +39,17 @@ char *rrdInfo(rrd_info_t **ret, char *filename) {
 	rrd_clear_error();
 	*ret = rrd_info_r(filename);
 	return rrdError();
+}
+
+char *rrdDaemonFetch(int *ret, char *daemon, char *filename, const char *cf, time_t *start, time_t *end, unsigned long *step, unsigned long *ds_cnt, char ***ds_namv, double **data) {
+    rrd_clear_error();
+    rrdc_connect(daemon);
+    if (rrdc_is_connected(daemon)){
+        *ret = rrdc_fetch(filename, cf, start, end, step, ds_cnt, ds_namv, data);
+    } else {
+	    *ret = rrd_fetch_r(filename, cf, start, end, step, ds_cnt, ds_namv, data);
+    }
+    return rrdError();
 }
 
 char *rrdFetch(int *ret, char *filename, const char *cf, time_t *start, time_t *end, unsigned long *step, unsigned long *ds_cnt, char ***ds_namv, double **data) {
