@@ -95,7 +95,7 @@ func TestAll(t *testing.T) {
 	fmt.Printf("Start: %s\n", start)
 	fmt.Printf("End: %s\n", end)
 	fmt.Printf("Step: %s\n", step*time.Second)
-	fetchRes, err := Fetch(dbfile, "AVERAGE", start, end, step*time.Second, nil)
+	fetchRes, err := Fetch(dbfile, "AVERAGE", start, end, step*time.Second)
 	if err != nil {
 		t.Fatal(err)
 	}

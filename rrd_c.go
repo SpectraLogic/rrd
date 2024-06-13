@@ -443,7 +443,12 @@ func Info(filename string) (map[string]interface{}, error) {
 }
 
 // Fetch retrieves data from RRD file.
-func Fetch(filename, cf string, start, end time.Time, step time.Duration, daemon *string) (FetchResult, error) {
+func Fetch(filename, cf string, start, end time.Time, step time.Duration) (FetchResult, error) {
+	return DaemonFetch(filename, cf, start, end, step, nil)
+}
+
+// DaemonFetch retrieves data from RRD file or the RRD daemon.
+func DaemonFetch(filename, cf string, start, end time.Time, step time.Duration, daemon *string) (FetchResult, error) {
 	fn := C.CString(filename)
 	defer freeCString(fn)
 	cCf := C.CString(cf)
