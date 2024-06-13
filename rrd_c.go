@@ -462,7 +462,12 @@ func Fetch(filename, cf string, start, end time.Time, step time.Duration, daemon
 		cDsNames **C.char
 		cData    *C.double
 	)
-	err := makeError(C.rrdDaemonFetch(&ret, cDaemon, fn, cCf, &cStart, &cEnd, &cStep, &cDsCnt, &cDsNames, &cData))
+	var err error
+	if daemon != nil {
+		err = makeError(C.rrdDaemonFetch(&ret, cDaemon, fn, cCf, &cStart, &cEnd, &cStep, &cDsCnt, &cDsNames, &cData))
+	} else {
+		err = makeError(C.rrdFetch(&ret, fn, cCf, &cStart, &cEnd, &cStep, &cDsCnt, &cDsNames, &cData))
+	}
 	if err != nil {
 		return FetchResult{filename, cf, start, end, step, nil, 0, nil}, err
 	}
