@@ -1,3 +1,3 @@
-module github.com/ziutek/rrd
+module github.com/spectralogic/rrd
 
 go 1.13
