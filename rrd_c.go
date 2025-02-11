@@ -90,12 +90,39 @@ func (c *Creator) create() error {
 }
 
 func (u *Updater) update(args []*cstring) error {
-	e := C.rrdUpdate(
-		(*C.char)(u.filename),
-		(*C.char)(u.template),
-		C.int(len(args)),
-		(**C.char)(unsafe.Pointer(&args[0])),
-	)
+	/*
+		e := C.rrdUpdate(
+			(*C.char)(u.filename),
+			(*C.char)(u.template),
+			C.int(len(args)),
+			(**C.char)(unsafe.Pointer(&args[0])),
+		)
+
+	*/
+	return u.daemonUpdate(nil, args)
+}
+
+func (u *Updater) daemonUpdate(daemon *string, args []*cstring) error {
+	var cDaemon *C.char
+	var e error
+
+	if daemon != nil {
+		cDaemon = C.CString(*daemon)
+		e = C.rrdDaemonUpdate(
+			cDaemon,
+			(*C.char)(u.filename),
+			(*C.char)(u.template),
+			C.int(len(args)),
+			(**C.char)(unsafe.Pointer(&args[0])),
+		)
+	} else {
+		e = C.rrdUpdate(
+			(*C.char)(u.filename),
+			(*C.char)(u.template),
+			C.int(len(args)),
+			(**C.char)(unsafe.Pointer(&args[0])),
+		)
+	}
 	return makeError(e)
 }
 
