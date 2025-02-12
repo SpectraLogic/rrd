@@ -31,9 +31,9 @@ char *rrdUpdate(const char *filename, const char *template, int argc, const char
 
 char *rrdDaemonUpdate(char *daemon, const char *filename, const char *template, int argc, const char **argv) {
 	rrd_clear_error();
-	rrdc_comment(daemon);
+	rrdc_connect(daemon);
 	if (rrdc_is_connected(daemon)){
-		rrdc_update(filename, template, argc, argv);
+		rrdc_update(filename, argc, argv);
 	} else {
 		rrd_update_r(filename, template, argc, argv);
 	}

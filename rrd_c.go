@@ -104,7 +104,7 @@ func (u *Updater) update(args []*cstring) error {
 
 func (u *Updater) daemonUpdate(daemon *string, args []*cstring) error {
 	var cDaemon *C.char
-	var e error
+	var e *C.char
 
 	if daemon != nil {
 		cDaemon = C.CString(*daemon)
