@@ -99,17 +99,15 @@ func (u *Updater) update(args []*cstring) error {
 		)
 
 	*/
-	return u.daemonUpdate(nil, args)
+	return u.daemonUpdate(u.daemon, args)
 }
 
-func (u *Updater) daemonUpdate(daemon *string, args []*cstring) error {
-	var cDaemon *C.char
+func (u *Updater) daemonUpdate(daemon *cstring, args []*cstring) error {
 	var e *C.char
 
-	if daemon != nil {
-		cDaemon = C.CString(*daemon)
+	if u.daemon != nil {
 		e = C.rrdDaemonUpdate(
-			cDaemon,
+			(*C.char)(u.daemon),
 			(*C.char)(u.filename),
 			(*C.char)(u.template),
 			C.int(len(args)),
