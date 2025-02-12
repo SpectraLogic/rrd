@@ -116,6 +116,7 @@ type Updater struct {
 
 func NewUpdater(filename string) *Updater {
 	return NewDaemonUpdater(filename, "")
+}
 
 func NewDaemonUpdater(filename string, daemon string) *Updater {
 	u := &Updater{filename: newCstring(filename), daemon: newCstring(daemon)}
