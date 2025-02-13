@@ -115,11 +115,14 @@ type Updater struct {
 }
 
 func NewUpdater(filename string) *Updater {
-	return NewDaemonUpdater(filename, "")
+	return NewDaemonUpdater(filename, nil)
 }
 
-func NewDaemonUpdater(filename string, daemon string) *Updater {
-	u := &Updater{filename: newCstring(filename), daemon: newCstring(daemon)}
+func NewDaemonUpdater(filename string, daemon *string) *Updater {
+	u := &Updater{filename: newCstring(filename)}
+	if daemon != nil {
+		u.daemon = newCstring(*daemon)
+	}
 	runtime.SetFinalizer(u, cfree)
 	return u
 }

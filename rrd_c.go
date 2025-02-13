@@ -90,15 +90,6 @@ func (c *Creator) create() error {
 }
 
 func (u *Updater) update(args []*cstring) error {
-	/*
-		e := C.rrdUpdate(
-			(*C.char)(u.filename),
-			(*C.char)(u.template),
-			C.int(len(args)),
-			(**C.char)(unsafe.Pointer(&args[0])),
-		)
-
-	*/
 	return u.daemonUpdate(u.daemon, args)
 }
 
