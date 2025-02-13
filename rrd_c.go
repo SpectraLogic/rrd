@@ -90,10 +90,6 @@ func (c *Creator) create() error {
 }
 
 func (u *Updater) update(args []*cstring) error {
-	return u.daemonUpdate(u.daemon, args)
-}
-
-func (u *Updater) daemonUpdate(daemon *cstring, args []*cstring) error {
 	var e *C.char
 
 	if u.daemon != nil {
