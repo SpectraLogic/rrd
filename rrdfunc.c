@@ -29,6 +29,17 @@ char *rrdUpdate(const char *filename, const char *template, int argc, const char
 	return rrdError();
 }
 
+char *rrdDaemonUpdate(char *daemon, const char *filename, const char *template, int argc, const char **argv) {
+	rrd_clear_error();
+	rrdc_connect(daemon);
+	if (rrdc_is_connected(daemon)){
+		rrdc_update(filename, argc, argv);
+	} else {
+		rrd_update_r(filename, template, argc, argv);
+	}
+	return rrdError();
+}
+
 char *rrdGraph(rrd_info_t **ret, int argc, char **argv) {
 	rrd_clear_error();
 	*ret = rrd_graph_v(argc, argv);

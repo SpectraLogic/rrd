@@ -109,12 +109,20 @@ func (c *Creator) Create(overwrite bool) error {
 type Updater struct {
 	filename *cstring
 	template *cstring
+	daemon *cstring
 
 	args []*cstring
 }
 
 func NewUpdater(filename string) *Updater {
+	return NewDaemonUpdater(filename, nil)
+}
+
+func NewDaemonUpdater(filename string, daemon *string) *Updater {
 	u := &Updater{filename: newCstring(filename)}
+	if daemon != nil {
+		u.daemon = newCstring(*daemon)
+	}
 	runtime.SetFinalizer(u, cfree)
 	return u
 }
