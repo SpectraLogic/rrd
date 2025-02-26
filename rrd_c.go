@@ -471,6 +471,7 @@ func DaemonFetch(filename, cf string, start, end time.Time, step time.Duration, 
 	var cDaemon *C.char
 	if daemon != nil {
 		cDaemon = C.CString(*daemon)
+		defer freeCString(cDaemon)
 	}
 
 	var (
@@ -510,6 +511,17 @@ func DaemonFetch(filename, cf string, start, end time.Time, step time.Duration, 
 	sliceHeader.Len = valuesLen
 	sliceHeader.Data = uintptr(unsafe.Pointer(cData))
 	return FetchResult{filename, cf, start, end, step, dsNames, rowCnt, values}, nil
+}
+
+// DaemonFlush instructs the daemon to flush the given RRD file.
+func DaemonFlush(daemon, filename string) error {
+	cDaemon := C.CString(daemon)
+	defer freeCString(cDaemon)
+	fn := C.CString(filename)
+	defer freeCString(fn)
+
+	var ret C.int
+	return makeError(C.rrdDaemonFlush(&ret, cDaemon, fn))
 }
 
 // FreeValues free values memory allocated by C.
