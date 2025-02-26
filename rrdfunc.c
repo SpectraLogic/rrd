@@ -69,9 +69,9 @@ char *rrdFetch(int *ret, char *filename, const char *cf, time_t *start, time_t *
 	return rrdError();
 }
 
-char *rrdDaemonFlush(int *ret, const char *daemon, const char *filename)
+char *rrdDaemonFlush(int *ret, const char *daemon, const char *filename) {
 	rrd_clear_error();
-	*ret = rrdc_flush_if_daemon(daemon, filename)
+	*ret = rrdc_flush_if_daemon(daemon, filename);
 	return rrdError();
 }
 
