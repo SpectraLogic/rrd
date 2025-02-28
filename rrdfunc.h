@@ -3,6 +3,7 @@ extern char *rrdUpdate(const char *filename, const char *template, int argc, con
 extern char *rrdDaemonUpdate(char *daemon, const char *filename, const char *template, int argc, const char **argv);
 extern char *rrdGraph(rrd_info_t **ret, int argc, char **argv);
 extern char *rrdInfo(rrd_info_t **ret, char *filename);
+extern char *rrdDaemonInfo(rrd_info_t **ret, char *daemon, char *filename);
 extern char *rrdDaemonFetch(int *ret, char *daemon, char *filename, const char *cf, time_t *start, time_t *end, unsigned long *step, unsigned long *ds_cnt, char ***ds_namv, double **data);
 extern char *rrdFetch(int *ret, char *filename, const char *cf, time_t *start, time_t *end, unsigned long *step, unsigned long *ds_cnt, char ***ds_namv, double **data);
 extern char *rrdDaemonFlush(int *ret, const char *daemon, const char *filename);

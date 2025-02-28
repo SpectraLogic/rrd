@@ -444,10 +444,25 @@ func (g *Grapher) graph(filename string, start, end time.Time) (GraphInfo, []byt
 
 // Info returns information about RRD file.
 func Info(filename string) (map[string]interface{}, error) {
+	return DaemonInfo(filename, nil)
+}
+
+// Info returns information about RRD file.
+func DaemonInfo(filename string, daemon *string) (map[string]interface{}, error) {
 	fn := C.CString(filename)
 	defer freeCString(fn)
+	var cDaemon *C.char
+	var err error
+	if daemon != nil {
+		cDaemon = C.CString(*daemon)
+		defer freeCString(cDaemon)
+	}
 	var i *C.rrd_info_t
-	err := makeError(C.rrdInfo(&i, fn))
+	if daemon != nil {
+		err = makeError(C.rrdDaemonInfo(&i, fn, cDaemon))
+	} else {
+		err = makeError(C.rrdInfo(&i, fn))
+	}
 	if err != nil {
 		return nil, err
 	}

@@ -52,6 +52,17 @@ char *rrdInfo(rrd_info_t **ret, char *filename) {
 	return rrdError();
 }
 
+char *rrdDaemonInfo(rrd_info_t **ret, char* daemon, char *filename) {
+	rrd_clear_error();
+    rrdc_connect(daemon);
+    if (rrdc_is_connected(daemon)){
+    	*ret = rrdc_info(filename);
+    } else {
+        *ret = rrd_info_r(filename);
+    }
+	return rrdError();
+}
+
 char *rrdDaemonFetch(int *ret, char *daemon, char *filename, const char *cf, time_t *start, time_t *end, unsigned long *step, unsigned long *ds_cnt, char ***ds_namv, double **data) {
     rrd_clear_error();
     rrdc_connect(daemon);
