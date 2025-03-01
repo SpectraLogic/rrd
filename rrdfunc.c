@@ -25,7 +25,7 @@ char *rrdCreate(const char *filename, unsigned long step, time_t start, int argc
 
 char *rrdUpdate(const char *filename, const char *template, int argc, const char **argv) {
 	rrd_clear_error();
-	rrd_update_r(filename, template, argc, argv);
+	rrd_updatex_r(filename, template, RRD_SKIP_PAST_UPDATES, argc, argv);
 	return rrdError();
 }
 
