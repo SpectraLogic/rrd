@@ -111,6 +111,18 @@ func (u *Updater) update(args []*cstring) error {
 	return makeError(e)
 }
 
+func (u *Updater) updatenodaemon(args []*cstring) error {
+	var e *C.char
+
+	e = C.rrdUpdatex(
+		(*C.char)(u.filename),
+		(*C.char)(u.template),
+		C.int(len(args)),
+		(**C.char)(unsafe.Pointer(&args[0])),
+	)
+	return makeError(e)
+}
+
 var (
 	graphv = C.CString("graphv")
 	xport  = C.CString("xport")
