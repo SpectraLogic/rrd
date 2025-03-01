@@ -459,7 +459,7 @@ func DaemonInfo(filename string, daemon *string) (map[string]interface{}, error)
 	}
 	var i *C.rrd_info_t
 	if daemon != nil {
-		err = makeError(C.rrdDaemonInfo(&i, fn, cDaemon))
+		err = makeError(C.rrdDaemonInfo(&i, cDaemon, fn))
 	} else {
 		err = makeError(C.rrdInfo(&i, fn))
 	}
