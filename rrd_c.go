@@ -111,6 +111,18 @@ func (u *Updater) update(args []*cstring) error {
 	return makeError(e)
 }
 
+func (u *Updater) updatenodaemon(args []*cstring) error {
+	var e *C.char
+
+	e = C.rrdUpdatex(
+		(*C.char)(u.filename),
+		(*C.char)(u.template),
+		C.int(len(args)),
+		(**C.char)(unsafe.Pointer(&args[0])),
+	)
+	return makeError(e)
+}
+
 var (
 	graphv = C.CString("graphv")
 	xport  = C.CString("xport")
@@ -444,10 +456,25 @@ func (g *Grapher) graph(filename string, start, end time.Time) (GraphInfo, []byt
 
 // Info returns information about RRD file.
 func Info(filename string) (map[string]interface{}, error) {
+	return DaemonInfo(filename, nil)
+}
+
+// Info returns information about RRD file.
+func DaemonInfo(filename string, daemon *string) (map[string]interface{}, error) {
 	fn := C.CString(filename)
 	defer freeCString(fn)
+	var cDaemon *C.char
+	var err error
+	if daemon != nil {
+		cDaemon = C.CString(*daemon)
+		defer freeCString(cDaemon)
+	}
 	var i *C.rrd_info_t
-	err := makeError(C.rrdInfo(&i, fn))
+	if daemon != nil {
+		err = makeError(C.rrdDaemonInfo(&i, cDaemon, fn))
+	} else {
+		err = makeError(C.rrdInfo(&i, fn))
+	}
 	if err != nil {
 		return nil, err
 	}

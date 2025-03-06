@@ -23,6 +23,12 @@ char *rrdCreate(const char *filename, unsigned long step, time_t start, int argc
 	return rrdError();
 }
 
+char *rrdUpdatex(const char *filename, const char *template, int argc, const char **argv) {
+	rrd_clear_error();
+	rrd_updatex_r(filename, template, RRD_SKIP_PAST_UPDATES, argc, argv);
+	return rrdError();
+}
+
 char *rrdUpdate(const char *filename, const char *template, int argc, const char **argv) {
 	rrd_clear_error();
 	rrd_update_r(filename, template, argc, argv);
@@ -49,6 +55,17 @@ char *rrdGraph(rrd_info_t **ret, int argc, char **argv) {
 char *rrdInfo(rrd_info_t **ret, char *filename) {
 	rrd_clear_error();
 	*ret = rrd_info_r(filename);
+	return rrdError();
+}
+
+char *rrdDaemonInfo(rrd_info_t **ret, char* daemon, char *filename) {
+	rrd_clear_error();
+    rrdc_connect(daemon);
+    if (rrdc_is_connected(daemon)){
+    	*ret = rrdc_info(filename);
+    } else {
+        *ret = rrd_info_r(filename);
+    }
 	return rrdError();
 }
 

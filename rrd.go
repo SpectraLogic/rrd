@@ -61,6 +61,7 @@ type Creator struct {
 
 // NewCreator returns new Creator object. You need to call Create to really
 // create database file.
+//
 //	filename - name of database file
 //	start    - don't accept any data timed before or at time specified
 //	step     - base interval in seconds with which data will be fed into RRD
@@ -109,7 +110,7 @@ func (c *Creator) Create(overwrite bool) error {
 type Updater struct {
 	filename *cstring
 	template *cstring
-	daemon *cstring
+	daemon   *cstring
 
 	args []*cstring
 }
@@ -157,6 +158,26 @@ func (u *Updater) Update(args ...interface{}) error {
 		return err
 	} else if len(u.args) != 0 {
 		err := u.update(u.args)
+		for _, a := range u.args {
+			a.Free()
+		}
+		u.args = nil
+		return err
+	}
+	return nil
+}
+
+// Update saves data in RRDB.
+// Without args Update saves all subsequent updates buffered by Cache method.
+// If you specify args it saves them immediately.
+func (u *Updater) UpdateNoDaemon(args ...interface{}) error {
+	if len(args) != 0 {
+		cs := newCstring(join(args))
+		err := u.updatenodaemon([]*cstring{cs})
+		cs.Free()
+		return err
+	} else if len(u.args) != 0 {
+		err := u.updatenodaemon(u.args)
 		for _, a := range u.args {
 			a.Free()
 		}
