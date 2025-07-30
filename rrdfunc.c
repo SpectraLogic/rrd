@@ -46,12 +46,6 @@ char *rrdDaemonUpdate(char *daemon, const char *filename, const char *template, 
 	return rrdError();
 }
 
-char *rrdGraph(rrd_info_t **ret, int argc, char **argv) {
-	rrd_clear_error();
-	*ret = rrd_graph_v(argc, argv);
-	return rrdError();
-}
-
 char *rrdInfo(rrd_info_t **ret, char *filename) {
 	rrd_clear_error();
 	*ret = rrd_info_r(filename);
@@ -89,12 +83,6 @@ char *rrdFetch(int *ret, char *filename, const char *cf, time_t *start, time_t *
 char *rrdDaemonFlush(int *ret, const char *daemon, const char *filename) {
 	rrd_clear_error();
 	*ret = rrdc_flush_if_daemon(daemon, filename);
-	return rrdError();
-}
-
-char *rrdXport(int *ret, int argc, char **argv, int *xsize, time_t *start, time_t *end, unsigned long *step, unsigned long *col_cnt, char ***legend_v, double **data) {
-	rrd_clear_error();
-	*ret = rrd_xport(argc, argv, xsize, start, end, step, col_cnt, legend_v, data);
 	return rrdError();
 }
 
